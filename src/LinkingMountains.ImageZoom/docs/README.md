@@ -1,8 +1,6 @@
 # 🌈 LinkingMountainsImageZoomWPF - Smooth Image Zooming for WPF
 Custom WPF image viewer with mouse wheel zoom &amp; any - direction drag pan
 
-![imagezoomdemo.gif](./doc/image/imagezoomdemo.gif)
-
 ## 🚀 Get Started
 
 ### 🛠️ Installation
@@ -23,14 +21,3 @@ xmlns:lmimgz="clr-namespace:LinkingMountains.ImageZoom;assembly=LinkingMountains
 ```xaml
 <lmimgz:ImageZoom Source="{Binding yourimage}"/>
 ```
-
-## 🤝 Contributing
-
-We welcome all contributions! You can:
-- Open issues for bugs or feature requests
-- Fork the project and submit pull requests
-- Share use cases or tutorials
-
-## 📜 License
-
-MIT License - Free to use, modify and distribute, just keep the original license notice

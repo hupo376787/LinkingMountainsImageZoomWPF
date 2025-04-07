@@ -1,0 +1,96 @@
+﻿<Window x:Class="ImageViewerDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewerDemo"
+        xmlns:lmimgz="clr-namespace:LinkingMountains.ImageZoom;assembly=LinkingMountains.ImageZoom"
+        mc:Ignorable="d"
+        Name="_mainWin"
+        Title="MainWindow" Height="700" Width="1000">
+    <Grid Margin="30">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <lmimgz:ImageZoom x:Name="imageViewer" Source="{Binding ElementName=_mainWin,Path=Tag,Mode=OneWay}" Background="LightGray"/>
+        
+        <StackPanel Grid.Row="1" Margin="0 20 0 0">
+            <StackPanel.Resources>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="Margin" Value="10,0,0,0"/>
+                    <Setter Property="Padding" Value="5,0,5,0"/>
+                </Style>
+                <Style TargetType="{x:Type CheckBox}">
+                    <Setter Property="Margin" Value="10,0,0,0"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="{x:Type Slider}">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="TickFrequency" Value="0.01"/>
+                    <Setter Property="SmallChange" Value="0.01"/>
+                    <Setter Property="AutoToolTipPlacement" Value="BottomRight"/>
+                    <Setter Property="AutoToolTipPrecision" Value="2"/>
+                </Style>
+            </StackPanel.Resources>
+            
+            <StackPanel Orientation="Horizontal" Height="30">
+                <Button Name="refreshBtn" Content="Refresh Image" Click="refreshBtn_Click" Margin="0,0,5,0"/>
+                <Button Name="leftBtn" Content="Left" Click="leftBtn_Click" />
+                <Button Name="rightBtn" Content="Right" Click="rightBtn_Click" />
+                <Button Name="upBtn" Content="Up" Click="upBtn_Click" />
+                <Button Name="downBtn" Content="Down" Click="downBtn_Click" />
+                <Button Name="zoomInBtn" Content="Zoom In" Click="zoomInBtn_Click" />
+                <Button Name="zoomOutBtn" Content="Zoom Out" Click="zoomOutBtn_Click" />
+                <Button Name="resetBtn" Content="Reset" Click="resetBtn_Click" />
+                <CheckBox Content="Hide Zoom Hint" IsChecked="{Binding ElementName=imageViewer,Path=AlwaysHideZoomValueHint,Mode=TwoWay}"/>
+                <CheckBox Content="Disable Animation" IsChecked="{Binding ElementName=imageViewer,Path=DisableAnimation,Mode=TwoWay}"/>
+            </StackPanel>
+            
+            <Grid Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                
+                <TextBlock Grid.Row="0" Grid.Column="0">
+                    <Run Text="ZoomRatio: "/>
+                    <Run Text="{Binding ElementName=imageViewer,Path=ZoomRatio,Mode=OneWay,StringFormat=P2}"/>
+                </TextBlock>
+                <Slider Grid.Row="0" Grid.Column="1" Value="{Binding ElementName=imageViewer,Path=ZoomRatio,Mode=TwoWay}"
+                        Minimum="{Binding ElementName=imageViewer,Path=MinZoomRatio,Mode=OneWay}" Maximum="{Binding ElementName=imageViewer,Path=MaxZoomRatio,Mode=OneWay}"/>
+                
+                <TextBlock Grid.Row="1" Grid.Column="0">
+                    <Run Text="ZoomFactor: "/>
+                    <Run Text="{Binding ElementName=imageViewer,Path=ZoomFactor,Mode=OneWay,StringFormat=F1}"/>
+                </TextBlock>
+                <Slider Grid.Row="1" Grid.Column="1" Value="{Binding ElementName=imageViewer,Path=ZoomFactor,Mode=TwoWay}"
+                        Minimum="1" Maximum="5"/>
+                
+                <TextBlock Grid.Row="2" Grid.Column="0">
+                    <Run Text="MinZoomRatio: "/>
+                    <Run Text="{Binding ElementName=imageViewer,Path=MinZoomRatio,Mode=OneWay,StringFormat=P2}"/>
+                </TextBlock>
+                <Slider Grid.Row="2" Grid.Column="1" Value="{Binding ElementName=imageViewer,Path=MinZoomRatio,Mode=TwoWay}"
+                        Minimum="0" Maximum="100"/>
+                
+                <TextBlock Grid.Row="3" Grid.Column="0">
+                    <Run Text="MaxZoomRatio: "/>
+                    <Run Text="{Binding ElementName=imageViewer,Path=MaxZoomRatio,Mode=OneWay,StringFormat=P2}"/>
+                </TextBlock>
+                <Slider Grid.Row="3" Grid.Column="1" Value="{Binding ElementName=imageViewer,Path=MaxZoomRatio,Mode=TwoWay}"
+                        Minimum="0" Maximum="100"/>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>
