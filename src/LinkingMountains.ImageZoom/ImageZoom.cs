@@ -276,6 +276,94 @@ namespace LinkingMountains.ImageZoom
         public static readonly DependencyProperty MoveCursorProperty = DependencyProperty.Register(nameof(MoveCursor), typeof(Cursor), typeof(ImageZoom), new FrameworkPropertyMetadata(Cursors.ScrollAll));
         #endregion
 
+        #region PanX
+        /// <summary>
+        /// Gets or sets the horizontal pan offset.
+        /// </summary>
+        public double PanX
+        {
+            get { return (double)GetValue(PanXProperty); }
+            set { SetValue(PanXProperty, value); }
+        }
+
+        /// <summary>
+        /// See <see cref="ImageZoom.PanX"/> property.
+        /// </summary>
+        public static readonly DependencyProperty PanXProperty =
+            DependencyProperty.Register(
+                nameof(PanX),
+                typeof(double),
+                typeof(ImageZoom),
+                new FrameworkPropertyMetadata(
+                    TranslateXDefault,
+                    OnPanXChanged,
+                    OnCoercePanX));
+
+        private static void OnPanXChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ImageZoom z = (ImageZoom)d;
+            double newX = (double)e.NewValue;
+
+            // 使用当前 ZoomRatio，纵向平移采用当前 PanY
+            double ratio = z.ZoomRatio;
+            double y = z.PanY;
+
+            z._translateXCurrent = newX;
+            z.AnimateTransform(ratio, ratio, newX, y, !z.DisableAnimation, false);
+        }
+
+        private static object OnCoercePanX(DependencyObject d, object baseValue)
+        {
+            double value = (double)baseValue;
+            if (double.IsNaN(value) || double.IsInfinity(value))
+                return TranslateXDefault;
+            return value;
+        }
+        #endregion
+
+        #region PanY
+        /// <summary>
+        /// Gets or sets the vertical pan offset.
+        /// </summary>
+        public double PanY
+        {
+            get { return (double)GetValue(PanYProperty); }
+            set { SetValue(PanYProperty, value); }
+        }
+
+        /// <summary>
+        /// See <see cref="ImageZoom.PanY"/> property.
+        /// </summary>
+        public static readonly DependencyProperty PanYProperty =
+            DependencyProperty.Register(
+                nameof(PanY),
+                typeof(double),
+                typeof(ImageZoom),
+                new FrameworkPropertyMetadata(
+                    TranslateYDefault,
+                    OnPanYChanged,
+                    OnCoercePanY));
+
+        private static void OnPanYChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ImageZoom z = (ImageZoom)d;
+            double newY = (double)e.NewValue;
+
+            double ratio = z.ZoomRatio;
+            double x = z.PanX;
+
+            z._translateYCurrent = newY;
+            z.AnimateTransform(ratio, ratio, x, newY, !z.DisableAnimation, false);
+        }
+
+        private static object OnCoercePanY(DependencyObject d, object baseValue)
+        {
+            double value = (double)baseValue;
+            if (double.IsNaN(value) || double.IsInfinity(value))
+                return TranslateYDefault;
+            return value;
+        }
+        #endregion
 
         public override void OnApplyTemplate()
         {
@@ -411,6 +499,11 @@ namespace LinkingMountains.ImageZoom
                     {
                         _suppressZoomRatioChanged = false;
                     }
+
+                    // 同步逻辑平移值到依赖属性，保持与实际 Transform 一致
+                    SetCurrentValue(PanXProperty, translateX);
+                    SetCurrentValue(PanYProperty, translateY);
+
                     AnimateTransform(newZoomRatio, newZoomRatio, translateX, translateY, useAnimation, hasScaleChanged);
                     needZoom = false;
                 }
@@ -513,6 +606,13 @@ namespace LinkingMountains.ImageZoom
                 offsetX = _translateXCurrent;
             else if (double.IsNaN(offsetY) || double.IsInfinity(offsetY))
                 offsetY = _translateYCurrent;
+
+            _translateXCurrent = offsetX;
+            _translateYCurrent = offsetY;
+
+            // 更新依赖属性，保证外部可以获取到最新的平移值
+            SetCurrentValue(PanXProperty, offsetX);
+            SetCurrentValue(PanYProperty, offsetY);
 
             AnimateTransform(ratio, ratio, offsetX, offsetY, useAnimation, false);
         }
